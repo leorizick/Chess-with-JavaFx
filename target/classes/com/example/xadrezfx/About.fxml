@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.xadrezfx.MenuController">
+   <children>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="About">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="10.0" top="10.0" />
+         </VBox.margin>
+      </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="A GigaGame (GG) é a mais nova e menos conhecida empresa no ramo de desenvolvimento.">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="10.0" top="10.0" />
+         </VBox.margin>
+      </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Este software é um estudo e pratica em desenvolvimento Java">
+         <VBox.margin>
+            <Insets left="10.0" top="10.0" />
+         </VBox.margin>
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" />
+      <Text fill="#bf0505" strokeType="OUTSIDE" strokeWidth="0.0" text="A GigaGames agradece o seu download!" textAlignment="CENTER" wrappingWidth="788.11328125">
+         <VBox.margin>
+            <Insets left="10.0" top="150.0" />
+         </VBox.margin>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Text>
+   </children>
+</VBox>
