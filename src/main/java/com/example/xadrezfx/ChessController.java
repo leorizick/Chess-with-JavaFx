@@ -6,9 +6,10 @@ import com.example.xadrezfx.entities.Position;
 import com.example.xadrezfx.entities.TipoDePecas.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -20,20 +21,24 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ChessController implements Initializable {
-    private Node pecaSelecionada;
-    Integer column;
-    Integer row;
-    Integer oldRow;
-    Integer oldColumn;
-    double a = 0;
-    double b = 0;
-    int x = 0;
-    int y = 0;
-    int x1 = 0;
-    int y1 = 0;
-    private Pawn pawn;
+//    private Piece pecaSelecionada;
+//    private Piece pieceTarget;
+//    Integer column;
+//    Integer row;
+//    Integer oldRow;
+//    Integer oldColumn;
+//    double a = 0;
+//    double b = 0;
+//    int x = 0;
+//    int y = 0;
+//    int x1 = 0;
+//    int y1 = 0;
+//    private Pawn pawn;
+//    private Piece piece;
+//    private boolean movedPiece;
     private Piece piece;
 
+//    private List<Position> listPos = new ArrayList<>();
 
     @FXML
     private GridPane grid;
@@ -43,6 +48,7 @@ public class ChessController implements Initializable {
 
     @FXML
     private GridPane grid3;
+
 
 
     @FXML
@@ -65,14 +71,14 @@ public class ChessController implements Initializable {
     private void onDragDetected(MouseEvent event) {
         Node target = (Node) event.getTarget();
         target.startFullDrag();
-        pecaSelecionada = target;
+        piece.setPecaSelecionada((Piece) target);
         getOldPosition(target);
 
     }
 
 
     private void getOldPosition(Node target) {
-        oldRow = GridPane.getRowIndex(target);
+        piece.setOldRow() = GridPane.getRowIndex(target);
         oldColumn = GridPane.getColumnIndex(target);
         if (oldRow == null) oldRow = 0;
         if (oldColumn == null) oldColumn = 0;
@@ -89,28 +95,35 @@ public class ChessController implements Initializable {
     @FXML
     private void onDragReleased(MouseEvent event) {
         ImageView target = (ImageView) event.getTarget();
+        pieceTarget = (Piece) target;
         getNewPosition(target);
-
-        if (row == oldRow && column == oldColumn) {
-            pecaSelecionada.setEffect(new Glow(0));
-        } else {
+        movePiece();
+//        if(movedPiece) {
             removeCapturedPieces(target);
-            movePiece();
-            pecaSelecionada.setEffect(new Glow(0));
-            replaceImageView();
-        }
+//            movedPiece = false;
+//        }
+
+
+        pecaSelecionada.setEffect(new Glow(0));
+
     }
 
     private void movePiece() {
-        GridPane.setConstraints(pecaSelecionada, column, row);
+        if (pecaSelecionada.getColor() == pieceTarget.getColor()) {
+            return;
+        }
+        else{
+            GridPane.setConstraints(pecaSelecionada, column, row);
+            pecaSelecionada.setFirstMove(true);
+        }
     }
 
     private void removeCapturedPieces(Node target) {
-        if (target instanceof Label) {
-            pecaSelecionada.setEffect(new Glow(0));
+        ImageView newTarget = (ImageView) target;
+        pieceTarget = (Piece) target;
+        if (target instanceof Cells || pecaSelecionada.getColor() == pieceTarget.getColor()) {
+            return;
         } else {
-            ImageView newTarget = (ImageView) target;
-            Piece pieceTarget = (Piece) target;
             if (pieceTarget.getColor() == Color.WHITE) {
                 grid2.add(target, x, y);
                 x++;
@@ -139,29 +152,30 @@ public class ChessController implements Initializable {
         }
     }
 
-    private void replaceImageView() {
-        ImageView img = new ImageView();
-        grid.add(img, oldColumn, oldRow);
-
-        img.setCursor(Cursor.OPEN_HAND);
-        img.setFitHeight(70);
-        img.setFitWidth(70);
-        img.setOnDragDetected(this::onDragDetected);
-        img.setOnMouseDragReleased(this::onDragReleased);
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         List<Piece> list = createPieces();
         list.forEach(p -> {
-            p.setFitHeight(70);
-            p.setFitWidth(70);
-            p.setOnDragDetected(this::onDragDetected);
-            p.setOnMouseDragReleased(this::onDragReleased);
-            p.setOnMousePressed(this::onPressedDetected);
-            p.setOnMouseReleased(this::onUnPressDetected);
-            p.setCursor(Cursor.OPEN_HAND);
-            grid.add(p, p.getPosition().getColumn(), p.getPosition().getRow());
+            if ((p instanceof Cells)) {
+                GridPane.setValignment(p, VPos.CENTER);
+                GridPane.setHalignment(p, HPos.CENTER);
+                p.setFitHeight(72);
+                p.setFitWidth(72);
+                p.setOnMouseDragReleased(this::onDragReleased);
+                grid.add(p, p.getPosition().getColumn(), p.getPosition().getRow());
+            } else {
+                GridPane.setValignment(p, VPos.CENTER);
+                GridPane.setHalignment(p, HPos.CENTER);
+                p.setFitHeight(70);
+                p.setFitWidth(70);
+                p.setOnDragDetected(this::onDragDetected);
+                p.setOnMouseDragReleased(this::onDragReleased);
+                p.setOnMousePressed(this::onPressedDetected);
+                p.setOnMouseReleased(this::onUnPressDetected);
+                p.setCursor(Cursor.OPEN_HAND);
+                grid.add(p, p.getPosition().getColumn(), p.getPosition().getRow());
+            }
         });
 
 
@@ -169,12 +183,14 @@ public class ChessController implements Initializable {
 
     private List<Piece> createPieces() {
         List<Piece> list = new ArrayList<>();
+        list.addAll(createCells());
         list.addAll(createPawns());
         list.addAll(createRooks());
         list.addAll(createBishops());
         list.addAll(createKnights());
         list.addAll(createKings());
         list.addAll(createQueens());
+
         return list;
     }
 
@@ -263,12 +279,32 @@ public class ChessController implements Initializable {
         list.add(blackKing1);
         return list;
     }
+
     public List<Queen> createQueens() {
         List<Queen> list = new ArrayList<>();
         Queen whiteQueen1 = new Queen("DamaBranca.png", Color.WHITE, new Position(7, 3), false);
         Queen blackQueen1 = new Queen("DamaPreta.png", Color.BLACK, new Position(0, 3), false);
         list.add(whiteQueen1);
         list.add(blackQueen1);
+        return list;
+    }
+
+    public List<Cells> createCells() {
+        List<Cells> list = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if ((i + j) % 2 == 0) {
+                    Cells cell = new Cells("casaBranca.jpg", null, new Position(i, j), false);
+                    cell.setOpacity(30);
+                    list.add(cell);
+                } else {
+                    Cells cell = new Cells("casaPreta.png", null, new Position(i, j), false);
+                    cell.setOpacity(30);
+                    list.add(cell);
+                }
+
+            }
+        }
         return list;
     }
 }
