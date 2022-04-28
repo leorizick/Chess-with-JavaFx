@@ -1,13 +1,18 @@
 package com.example.xadrezfx.entities;
 
-import com.example.xadrezfx.entities.TipoDePecas.Pawn;
-import javafx.scene.image.Image;
+import com.example.xadrezfx.ChessController;
+import com.example.xadrezfx.entities.TipoDePecas.Cells;
+import javafx.scene.Node;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 public abstract class Piece extends ImageView {
     private Color color;
     private Position position;
     private boolean firstMove;
+
+    private ChessController chessController;
 
     //variaveis para migrar chessController
     private Piece pecaSelecionada;
@@ -22,10 +27,9 @@ public abstract class Piece extends ImageView {
     int y = 0;
     int x1 = 0;
     int y1 = 0;
-    private Pawn pawn;
-    private Piece piece;
     private boolean movedPiece;
-    public Piece(){
+
+    public Piece() {
 
     }
 
@@ -63,12 +67,20 @@ public abstract class Piece extends ImageView {
 //    Getters and setters Migração ChessController
 
 
+    public ChessController getChessController() {
+        return chessController;
+    }
+
+    public void setChessController(ChessController chessController) {
+        this.chessController = chessController;
+    }
+
     public Piece getPecaSelecionada() {
         return pecaSelecionada;
     }
 
-    public void setPecaSelecionada(Piece pecaSelecionada) {
-        this.pecaSelecionada = pecaSelecionada;
+    public void setPecaSelecionada(Piece target) {
+        pecaSelecionada = (Piece) target;
     }
 
     public Piece getPieceTarget() {
@@ -159,21 +171,6 @@ public abstract class Piece extends ImageView {
         this.y1 = y1;
     }
 
-    public Pawn getPawn() {
-        return pawn;
-    }
-
-    public void setPawn(Pawn pawn) {
-        this.pawn = pawn;
-    }
-
-    public Piece getPiece() {
-        return piece;
-    }
-
-    public void setPiece(Piece piece) {
-        this.piece = piece;
-    }
 
     public boolean isMovedPiece() {
         return movedPiece;
@@ -181,5 +178,62 @@ public abstract class Piece extends ImageView {
 
     public void setMovedPiece(boolean movedPiece) {
         this.movedPiece = movedPiece;
+    }
+
+    public void removeCapturedPieces(Node target) {
+        ImageView newTarget = (ImageView) target;
+        pieceTarget = (Piece) target;
+        if (target instanceof Cells || pecaSelecionada.getColor() == pieceTarget.getColor()) {
+            return;
+        } else {
+            if (pieceTarget.getColor() == Color.WHITE) {
+                chessController.getGrid2().add(target, x, y);
+                x++;
+                if (x >= 2) {
+                    x = 0;
+                    y++;
+                    if (y >= 4) {
+                        y = 0;
+                    }
+                }
+                if (pieceTarget.getColor() == Color.BLACK) {
+                    chessController.getGrid3().add(target, x1, y1);
+                    x1++;
+                    if (x1 >= 2) {
+                        x1 = 0;
+                        y1++;
+                        if (y1 >= 4) {
+                            y1 = 0;
+                        }
+                    }
+                }
+                newTarget.setFitHeight(50);
+                newTarget.setFitWidth(50);
+                newTarget.setEffect(new Glow(0));
+            }
+        }
+    }
+
+    public void getOldPosition(Node target) {
+        oldRow = GridPane.getRowIndex(target);
+        oldColumn = GridPane.getColumnIndex(target);
+        if (oldRow == null) oldRow = 0;
+        if (oldColumn == null) oldColumn = 0;
+    }
+
+    public void getNewPosition(Node target) {
+        row = GridPane.getRowIndex(target);
+        column = GridPane.getColumnIndex(target);
+        if (row == null) row = 0;
+        if (column == null) column = 0;
+    }
+
+    public void movePiece() {
+        if (pecaSelecionada.getColor() == pieceTarget.getColor()) {
+            return;
+        } else {
+            GridPane.setConstraints(pecaSelecionada, column, row);
+            pecaSelecionada.setFirstMove(true);
+        }
     }
 }
